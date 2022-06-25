@@ -1,0 +1,73 @@
+using System;
+using System.Threading;
+
+//シングルトンのインスタンスのメソッド内で実行される処理や、作成されるインスタンスが
+//マルチスレッドの場合でも相互に作用しないことの確認
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var obj = Singleton.GetInstance();
+            var obj2 = Singleton.GetInstance();
+
+            System.Threading.Thread t = new System.Threading.Thread(new ThreadStart(obj.Execute));
+            System.Threading.Thread t2 = new System.Threading.Thread(new ThreadStart(obj.Execute));
+
+            t.Start();
+            System.Threading.Thread.Sleep(5000);
+            t2.Start();
+
+
+        }
+    }
+
+    public class Singleton
+    {
+        public int Cnt { get; set; } = 0;
+
+        private static Singleton Instance = new Singleton();
+
+        static public Singleton GetInstance()
+        {
+            if(Instance == null)
+            {
+                Instance = new Singleton();
+                return Instance;
+            }
+
+            return Instance;
+        } 
+
+        public void Execute()
+        {
+            Cnt++;
+            var thread = new ThreadByObj(Cnt);
+            thread.Num++;
+            thread.StrNum = thread.Num.ToString();
+            System.Threading.Thread.Sleep(10000);
+            Console.WriteLine(thread.Cnt);
+            Console.WriteLine(thread.Num);
+            Console.WriteLine(thread.StrNum);
+        }
+
+
+    }
+
+    public class ThreadByObj
+    {
+        public int Cnt { get; set; }
+        public int Num { get; set; }
+        public string StrNum { get; set; }
+
+        public ThreadByObj(int cnt)
+        {
+            Num = 0;
+            StrNum = "0";
+            this.Cnt = cnt;
+        }
+
+    }
+}
