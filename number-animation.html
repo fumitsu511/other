@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>number|animation</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <input type="text" id="countInput">
+    <button id="startCount">Count</button>
+    <div id="counter">0</div>
+</body>
+<script>
+    $('#startCount').click(function () {
+        const countTo = $('#countInput').val();
+        if (isNaN(countTo)) {
+            return;
+        }
+        $('#counter').animate({
+            Counter: countTo
+        }, {
+            duration: 1000,
+            easing: 'linear',
+            step: function (now) {
+                $('#counter').text(Math.floor(now));
+            }
+        });
+    });
+</script>
+
+</html>
