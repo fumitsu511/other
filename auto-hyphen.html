@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatValueber|animation</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <label for="postalCode">郵便番号</label>
+    <input type="text" id="postalCode" maxlength="8" pattern="^[0-9\-]*$" placeholder="123-4567">
+</body>
+
+<script>
+    let keyCode = "";
+    KEY_CODE_BACKSPACE = 8;
+    KEY_CODE_DELETE = 46;
+
+    //入力時に郵便番号に自動でハイフンを付けるイベント
+    $("#postalCode").on('keyup', function (e) {
+        const value = $(this).val();
+        const pos = this.selectionStart;  //カーソルの現在地
+        keyCode = e.keyCode;
+
+        // 郵便番号整形
+        newValue = formatPostalNumer(value);
+        $(this).val(newValue);
+
+        //　値の変更確認（変更があった場合のみ、カーソル位置を修正）
+        if(value === newValue){
+            return;
+        }
+
+        // キーコード別にカーソル位置を戻す
+        if (keyCode == "" || keyCode == null || keyCode == void 0) {
+            //何もしない（一番最後にカーソルがいく）
+        } else if (keyCode == KEY_CODE_BACKSPACE) {
+            // BackSpaceを押下したとき
+            this.setSelectionRange(pos, pos);
+        } else if (keyCode == KEY_CODE_DELETE) {
+            // Deleteを押下したとき
+            if (pos == 3) {
+                this.setSelectionRange(pos + 1, pos + 1);
+            } else {
+                this.setSelectionRange(pos, pos);
+            }
+        } else {
+            if (pos == 4) {
+                this.setSelectionRange(pos + 1, pos + 1);
+            } else {
+                this.setSelectionRange(pos, pos);
+            }
+        }
+
+        keyCode = "";
+    });
+
+    // 郵便番号にハイフンを自動挿入するメソッド
+    function formatPostalNumer(value) {
+        // ハイフン削除
+        let formatValue = value.replace('-', '');
+        // 7文字目以降は削除（コピペ対応）
+        formatValue = formatValue.slice(0,7);
+        // 全角数字を半角数字に変換
+        formatValue = formatValue.replace('０', '0');
+        formatValue = formatValue.replace('１', '1');
+        formatValue = formatValue.replace('２', '2');
+        formatValue = formatValue.replace('３', '3');
+        formatValue = formatValue.replace('４', '4');
+        formatValue = formatValue.replace('５', '5');
+        formatValue = formatValue.replace('６', '6');
+        formatValue = formatValue.replace('７', '7');
+        formatValue = formatValue.replace('８', '8');
+        formatValue = formatValue.replace('９', '9');
+        if (formatValue.length <= 3) {
+            return formatValue
+        }
+        return formatValue.slice(0, 3) + '-' + formatValue.slice(3, formatValue.length);
+
+    }
+
+</script>
+
+</html>
